@@ -5,6 +5,7 @@
 int fase = 0;
 float MSECS = 300.0;
 
+
 void introCuadroTrasero(){ //Desplazamiento de abajo hacia arriba de cuadro trasero
 
 }
@@ -14,6 +15,9 @@ void display(int c){
 
     float tiempoTranscurrido = c*MSECS;
     glClear(GL_COLOR_BUFFER_BIT);
+
+//               ************ INTRODUCCIÓN ************
+
 
     if(tiempoTranscurrido > 0) {
         dibujaCuadroTrasero();
@@ -32,15 +36,32 @@ void display(int c){
         dibujaCirculoDerecho();
     }
     if(tiempoTranscurrido > 2000){
-        draw(0,0);
-        draw(-250,0);
-        draw(250,0);
+        dibujaTextura();
+        //68,141,136//135,189,187
+        draw(-250,0,180,189,187);
+        draw(250,0,180,189,187);
     }
     if(tiempoTranscurrido > 2100){
-        draw(0,250);
-        draw(0,-250);
+        draw(0,250,180,189,187);
+        draw(0,-250,180,189,187);
+    }
+    if(tiempoTranscurrido > 2200){
+        draw(250,250,45,189,187);
+        draw(-250,-250,45,189,187);
+        draw(-250,250,45,189,187);
+        draw(250,-250,45,189,187);
     }
 
+    //               ************ DESARROLLO DE LA HISTORIA ************
+
+
+    if(tiempoTranscurrido > 2500){
+        draw(-250,0,180,189,187);
+
+    }
+    if(tiempoTranscurrido > 2350){
+
+    }
     fase++;
     glutSwapBuffers();
     glutTimerFunc(MSECS, display, fase);
