@@ -102,6 +102,14 @@ void dibujaCuadroFrontal(){ dibujaCuadro( //cuadro frontal
             matrizDeDibujo[19][0],matrizDeDibujo[19][1],
             135.0/255.0,189.0/255.0,187.0/255.0);//135,189,187
 }
+void dibujaCuadroBlanco(float x, float y){  //cuadro frontal
+            dibujaCuadro( //cuadro trasero
+                    matrizDeDibujo[12][0] +x,matrizDeDibujo[12][1]+y,
+                    matrizDeDibujo[13][0]+x,matrizDeDibujo[13][1]+y,
+                    matrizDeDibujo[14][0]+x,matrizDeDibujo[14][1]+y,
+                    matrizDeDibujo[15][0]+x,matrizDeDibujo[15][1]+y,
+                    255,255,255);
+}
 void dibujaTextura(){
     dibujaMedioCirculo(matrizDeDibujo[4][0],matrizDeDibujo[4][1],radioCirculos,segmentosStdr,1.0,0);
     dibujaMedioCirculo(matrizDeDibujo[5][0],matrizDeDibujo[5][1],radioCirculos,segmentosStdr,1.0,0);
@@ -128,18 +136,8 @@ void dibujaCirculoIzquierdo(){
 void dibujaCirculoDerecho(){
     dibujaCirculo(matrizDeDibujo[3][0],matrizDeDibujo[3][1],radioCirculos,segmentosStdr);
 }
-void dibujaMediosCirculos(){
-    dibujaMedioCirculo(matrizDeDibujo[4][0],matrizDeDibujo[4][1],radioCirculos,segmentosStdr,1.0,0);
-    dibujaMedioCirculo(matrizDeDibujo[5][0],matrizDeDibujo[5][1],radioCirculos,segmentosStdr,1.0,0);
-    dibujaMedioCirculo(matrizDeDibujo[6][0],matrizDeDibujo[6][1],radioCirculos,segmentosStdr,-1.0,0);
-    dibujaMedioCirculo(matrizDeDibujo[7][0],matrizDeDibujo[7][1],radioCirculos,segmentosStdr,-1.0,0);
-    dibujaMedioCirculo(matrizDeDibujo[8][0],matrizDeDibujo[8][1],radioCirculos,segmentosStdr,1.0,1);
-    dibujaMedioCirculo(matrizDeDibujo[9][0],matrizDeDibujo[9][1],radioCirculos,segmentosStdr,1.0,1);
-    dibujaMedioCirculo(matrizDeDibujo[10][0],matrizDeDibujo[10][1],radioCirculos,segmentosStdr,-1.0,1);
-    dibujaMedioCirculo(matrizDeDibujo[11][0],matrizDeDibujo[11][1],radioCirculos,segmentosStdr,-1.0,1);
-}
 
-void draw(float x,float y,float br, float bg, float bb){
+void dibujaBaldoza(float x, float y, float br, float bg, float bb,float segs){
     float radioCirculos = 62.0;
     float segmentosStdr = 500;
 
@@ -158,22 +156,22 @@ void draw(float x,float y,float br, float bg, float bb){
             matrizDeDibujo[19][0]+x,matrizDeDibujo[19][1]+y,
             br/255.0,bg/255.0,bb/255.0);
 
-    dibujaCirculo(matrizDeDibujo[0][0]+x,matrizDeDibujo[0][1]+y,radioCirculos,segmentosStdr);//central inferior
-    dibujaCirculo(matrizDeDibujo[1][0]+x,matrizDeDibujo[1][1]+y,radioCirculos,segmentosStdr);//central superior
-    dibujaCirculo(matrizDeDibujo[2][0]+x,matrizDeDibujo[2][1]+y,radioCirculos,segmentosStdr);//izquierdo
-    dibujaCirculo(matrizDeDibujo[3][0]+x,matrizDeDibujo[3][1]+y,radioCirculos,segmentosStdr);//derecho
-    dibujaMedioCirculo(matrizDeDibujo[4][0]+x,matrizDeDibujo[4][1]+y,radioCirculos,segmentosStdr,1.0,0);
-    dibujaMedioCirculo(matrizDeDibujo[5][0]+x,matrizDeDibujo[5][1]+y,radioCirculos,segmentosStdr,1.0,0);
-    dibujaMedioCirculo(matrizDeDibujo[6][0]+x,matrizDeDibujo[6][1]+y,radioCirculos,segmentosStdr,-1.0,0);
-    dibujaMedioCirculo(matrizDeDibujo[7][0]+x,matrizDeDibujo[7][1]+y,radioCirculos,segmentosStdr,-1.0,0);
-    dibujaMedioCirculo(matrizDeDibujo[8][0]+x,matrizDeDibujo[8][1]+y,radioCirculos,segmentosStdr,1.0,1);
-    dibujaMedioCirculo(matrizDeDibujo[9][0]+x,matrizDeDibujo[9][1]+y,radioCirculos,segmentosStdr,1.0,1);
-    dibujaMedioCirculo(matrizDeDibujo[10][0]+x,matrizDeDibujo[10][1]+y,radioCirculos,segmentosStdr,-1.0,1);
-    dibujaMedioCirculo(matrizDeDibujo[11][0]+x,matrizDeDibujo[11][1]+y,radioCirculos,segmentosStdr,-1.0,1);
-    dibujaCirculoPequeno(matrizDeDibujo[0][0]+x,matrizDeDibujo[0][1]+y,7.0,segmentosStdr);
-    dibujaCirculoPequeno(matrizDeDibujo[1][0]+x,matrizDeDibujo[1][1]+y,7.0,segmentosStdr);
-    dibujaCirculoPequeno(matrizDeDibujo[2][0]+x,matrizDeDibujo[2][1]+y,7.0,segmentosStdr);
-    dibujaCirculoPequeno(matrizDeDibujo[3][0]+x,matrizDeDibujo[3][1]+y,7.0,segmentosStdr);
+    dibujaCirculo(matrizDeDibujo[0][0]+x,matrizDeDibujo[0][1]+y,radioCirculos,segs);//central inferior
+    dibujaCirculo(matrizDeDibujo[1][0]+x,matrizDeDibujo[1][1]+y,radioCirculos,segs);//central superior
+    dibujaCirculo(matrizDeDibujo[2][0]+x,matrizDeDibujo[2][1]+y,radioCirculos,segs);//izquierdo
+    dibujaCirculo(matrizDeDibujo[3][0]+x,matrizDeDibujo[3][1]+y,radioCirculos,segs);//derecho
+    dibujaMedioCirculo(matrizDeDibujo[4][0]+x,matrizDeDibujo[4][1]+y,radioCirculos,segs,1.0,0);
+    dibujaMedioCirculo(matrizDeDibujo[5][0]+x,matrizDeDibujo[5][1]+y,radioCirculos,segs,1.0,0);
+    dibujaMedioCirculo(matrizDeDibujo[6][0]+x,matrizDeDibujo[6][1]+y,radioCirculos,segs,-1.0,0);
+    dibujaMedioCirculo(matrizDeDibujo[7][0]+x,matrizDeDibujo[7][1]+y,radioCirculos,segs,-1.0,0);
+    dibujaMedioCirculo(matrizDeDibujo[8][0]+x,matrizDeDibujo[8][1]+y,radioCirculos,segs,1.0,1);
+    dibujaMedioCirculo(matrizDeDibujo[9][0]+x,matrizDeDibujo[9][1]+y,radioCirculos,segs,1.0,1);
+    dibujaMedioCirculo(matrizDeDibujo[10][0]+x,matrizDeDibujo[10][1]+y,radioCirculos,segs,-1.0,1);
+    dibujaMedioCirculo(matrizDeDibujo[11][0]+x,matrizDeDibujo[11][1]+y,radioCirculos,segs,-1.0,1);
+    dibujaCirculoPequeno(matrizDeDibujo[0][0]+x,matrizDeDibujo[0][1]+y,7.0,segs);
+    dibujaCirculoPequeno(matrizDeDibujo[1][0]+x,matrizDeDibujo[1][1]+y,7.0,segs);
+    dibujaCirculoPequeno(matrizDeDibujo[2][0]+x,matrizDeDibujo[2][1]+y,7.0,segs);
+    dibujaCirculoPequeno(matrizDeDibujo[3][0]+x,matrizDeDibujo[3][1]+y,7.0,segs);
 
     glFlush();
 }
