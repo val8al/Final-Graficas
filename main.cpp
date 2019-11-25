@@ -1,163 +1,233 @@
 #include <GL/glut.h>
-#include <math.h>
-#include "draw.h"
-
-int fase = 0;
-float MSECS = 100.0;
-
-int INICIO_DESARROLLO = 2200;
-int FIN_DESARROLLO = 23500;
-int FIN_CIERRE = 28500;
-float SEGMENTOS_POR_DEFECTO = 500; //Segmentos para tener un círculo completamente redondo
+#include <cmath>
 
 
+// angle of rotation for the camera direction
+float angle=0.0;
+// actual vector representing the camera's direction
+float lx=0.0f,lz=-1.0f, ly=0.0f;
+// XZ position of the camera
+float x=0.0f,z=-1.0f,y=1.0f;
+void draw() {
+
+    glColor3f(1.0f, 1.0f, 1.0f);
+
+// Draw Body
+    glTranslatef(0.0f ,0.75f, 0.0f);
+    //glutSolidSphere(0.1f,20,20);
 
 
-void display(int c){
+    glBegin(GL_LINE_LOOP);
+    glLineWidth(GL_MAX);
 
-    float tiempoTranscurrido = fase*MSECS;
-    float variableSenoidalColores = abs(255 * sin(fase*0.1)); //Senoidal que rige el cambio periodico de color en cada baldoza
-    float variableSenoidalMutacion = abs(10*sin(fase*0.1));  //Senoidal que rige el número de segmentos al que mutarán
-    // los círculos de la baldoza
-    glClear(GL_COLOR_BUFFER_BIT);
+    float lineR = 0.0;
+    float lineG = 0.0;
+    float lineB = 130.0;
+    double zc = -80;
+    float radius = 30;
+    float radialDecrease = 0.01;
+    for(int ii = 0; ii < 30/radialDecrease; ii++) //loop for the spiral, loop ii until the radius is 0
+    {
+        float theta = 2.0f * 3.1415926f * float(ii) / float(100);//get the current angle
 
-//               ************ INTRODUCCIÓN ************
+        float xc = radius * cosf(theta);//calculate the x component
+        float yc = radius * sinf(theta);//calculate the y component
+        zc -= 0.005;
+        radius -= radialDecrease;
+        if(ii > 0){
+            lineR +=0.001;
+            lineB += 0.001;
+        }
+        if (ii > 1000 && ii < 1200){
+            lineR += 0.001;
+            lineG += 0.001;
+            lineB -= 0.001;
+        }
+        if(ii >= 1200 && ii < 1400){
+            lineR -= 0.002;
+            lineG += 0.002;
+            lineB -= 0.002;
+        }
+        if(ii >= 1400){
+            lineR -= 0.002;
+            lineG += 0.005;
+            lineB -= 0.002;
+        }
+        glColor3f(lineR,lineG,lineB);
+        glVertex3d(xc , yc , zc);//output vertex
 
+    }
+    glEnd();
+    glBegin(GL_LINES);
+    glLineWidth(GL_MAX);
 
-    if(tiempoTranscurrido > 0) { //Dibujamos baldoza central segmento por segmento (desmembrado)
-        dibujaCuadroTrasero();
-    }
-    if(tiempoTranscurrido > 500){
-        dibujaCuadroFrontal();
-    }
-    if(tiempoTranscurrido > 1000){
-        dibujaCirculoInferior();
-        dibujaCirculoSuperior();
-    }
-    if(tiempoTranscurrido > 1500){
-        dibujaCirculoIzquierdo();
-        dibujaCirculoDerecho();
-    }
-    if(tiempoTranscurrido > 2000){    //se agrega el último elemento de baldoza central y se pintan las adyacentes
-        dibujaTextura();
-        dibujaBaldoza(-250, 0, 180, 189, 187,SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(250, 0, 180, 189, 187,SEGMENTOS_POR_DEFECTO);
-    }
-    if(tiempoTranscurrido > 2100){
-        dibujaBaldoza(0, 250, 180, 189, 187,SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(0, -250, 180, 189, 187,SEGMENTOS_POR_DEFECTO);
-    }
-    if(tiempoTranscurrido > INICIO_DESARROLLO){
-        dibujaBaldoza(0,0,135,189,187,SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(250, 250, 45, 189, 187,SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(-250, -250, 45, 189, 187,SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(-250, 250, 45, 189, 187,SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(250, -250, 45, 189, 187,SEGMENTOS_POR_DEFECTO);
-    }
+    for(int ii = 0; ii < 30/0.01; ii++) //loop for the incoming pointed lines
+    {
+        float theta = 2.0f * 3.1415926f * float(ii) / float(100);//get the current angle
+        float x = (radius-25)* cosf(theta);//calculate the x component
+        float y = (radius-25 )* sinf(theta);//calculate the y component
+        zc += 0.01f;
+        radius -= 0.01f;
+        lineR += 0.001f;
+        lineG -= 0.01f;
+        lineB -= 0.01f;
+        glColor3f(lineR,lineG,lineB);
+        if (ii %2 != 0){
+            glPushMatrix();
+            glTranslatef(x,y,zc);
+            glutSolidTetrahedron();
+            glPopMatrix();
+        }
+        glVertex3d(x , y , zc);//output vertex
 
-    //               ************ DESARROLLO DE LA HISTORIA ************
-
-    /*Se cambia a modo cámara, hacemos una rotación y se regresa a alteraciones del modelo*/
-    if(tiempoTranscurrido > 2500 && tiempoTranscurrido < 10500) {
-
-        glMatrixMode(GL_PROJECTION);
-        glRotatef(3, 0, 0, 1);
-        glMatrixMode(GL_MODELVIEW);
-        dibujaBaldoza(-250, 0, variableSenoidalColores, 189, 187, SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(250, 0, variableSenoidalColores, 189, 187, SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(0, 250, variableSenoidalColores, 189, 187, SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(0, -250, variableSenoidalColores, 189, 187, SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(250, 250, 45, 189, variableSenoidalColores, SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(-250, -250, 45, 189, variableSenoidalColores, SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(-250, 250, 45, 189, variableSenoidalColores, SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(250, -250, 45, 189, variableSenoidalColores, SEGMENTOS_POR_DEFECTO);
     }
-    if(tiempoTranscurrido > 10500 && tiempoTranscurrido< 15500 ){
-        glMatrixMode(GL_PROJECTION);
-        glRotatef(-3, 0, 0, 1);
-        glMatrixMode(GL_MODELVIEW);
-        dibujaBaldoza(-250, 0, 180, variableSenoidalColores, variableSenoidalColores, SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(250, 0, 180, variableSenoidalColores, variableSenoidalColores, SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(0, 250, 180, variableSenoidalColores, variableSenoidalColores, SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(0, -250, 180, variableSenoidalColores, variableSenoidalColores, SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(250, 250, variableSenoidalColores, 189, 187, SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(-250, -250, variableSenoidalColores, 189, 187, SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(-250, 250, variableSenoidalColores, 189, 187, SEGMENTOS_POR_DEFECTO);
-        dibujaBaldoza(250, -250, variableSenoidalColores, 189, 187, SEGMENTOS_POR_DEFECTO);
-    }
-    if(tiempoTranscurrido > 15500 && tiempoTranscurrido < 18600){
-        //rotamos la baldoza hacia otro lado, comenzamos mutaciones en cŕculos, semicírculos y cambiamos colores
-        glMatrixMode(GL_PROJECTION);
-        glRotatef(-3, 0, 0, 1);
-        glMatrixMode(GL_MODELVIEW);
-    }
-    if(tiempoTranscurrido > 15500 && tiempoTranscurrido < FIN_DESARROLLO){ //paramos la rotación
-        dibujaBaldoza(-250, 0, 180, variableSenoidalColores, variableSenoidalColores, variableSenoidalMutacion);
-        dibujaBaldoza(250, 0, 180, variableSenoidalColores, variableSenoidalColores, variableSenoidalMutacion);
-        dibujaBaldoza(0, 250, 180, variableSenoidalColores, variableSenoidalColores, variableSenoidalMutacion);
-        dibujaBaldoza(0, -250, 180, variableSenoidalColores, variableSenoidalColores, variableSenoidalMutacion);
-        dibujaBaldoza(250, 250, variableSenoidalColores, 189, 187, variableSenoidalMutacion);
-        dibujaBaldoza(-250, -250, variableSenoidalColores, 189, 187, variableSenoidalMutacion);
-        dibujaBaldoza(-250, 250, variableSenoidalColores, 189, 187, variableSenoidalMutacion);
-        dibujaBaldoza(250, -250, variableSenoidalColores, 189, 187, variableSenoidalMutacion);
-    }
-
-    //               ************ FIN DE LA HISTORIA ************
-
-
-    if(tiempoTranscurrido > FIN_DESARROLLO && tiempoTranscurrido < 25500){ //volvemos fondos blancos para apreciar mutaciones
-        dibujaBaldoza(-250, 0, 255, 255, 255, variableSenoidalMutacion);
-        dibujaBaldoza(250, 0, 255, 255, 255, variableSenoidalMutacion);
-        dibujaBaldoza(0, 250, 255, 255, 255, variableSenoidalMutacion);
-        dibujaBaldoza(0, -250, 255, 255, 255, variableSenoidalMutacion);
-        dibujaBaldoza(250, 250, 255, 255, 255, variableSenoidalMutacion);
-        dibujaBaldoza(-250, -250, 255, 255, 255, variableSenoidalMutacion);
-        dibujaBaldoza(-250, 250, 255, 255, 255, variableSenoidalMutacion);
-        dibujaBaldoza(250, -250, 255, 255, 255, variableSenoidalMutacion);
-    }
-    if(tiempoTranscurrido > 25500){ //dibujamos cuadros blancos para la salida
-        dibujaCuadroBlanco(-250, 0 );
-        dibujaCuadroBlanco(250, 0);
-    }
-    if(tiempoTranscurrido > 26000 ){
-        dibujaCuadroBlanco(0, 250 );
-        dibujaCuadroBlanco(0, -250);
-    }
-    if(tiempoTranscurrido > 26500 ){
-        dibujaCuadroBlanco(250, 250 );
-        dibujaCuadroBlanco(-250, -250);
-    }
-    if(tiempoTranscurrido > 27000 ){
-        dibujaCuadroBlanco(-250, 250 );
-        dibujaCuadroBlanco(250, -250);
-    }
-    if(tiempoTranscurrido > FIN_CIERRE) {
-        dibujaCuadroBlanco(0, 0);
-    }
-    fase++;
-    glutSwapBuffers();
-    glutTimerFunc(MSECS, display, fase);
+    glEnd();
 
 }
 
+void renderScene(void) {
 
-int main(int argc, char **argv){
+    // Clear Color and Depth Buffers
 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Reset transformations
+    glLoadIdentity();
+    // Set the camera
+    gluLookAt(x, y, z,
+              x + lx, y + ly , z + lz,
+              0.0f, 1.0f, 0.0f);
+
+
+    glColor3f(0.0f, 0.0f, 0.0f);
+    glBegin(GL_QUADS);
+// Floor
+    glVertex3f(-100,-100,-100);
+    glVertex3f(100,-100,-100);
+    glVertex3f(100,-100,1000);
+    glVertex3f(-100,-100,1000);
+    // Ceiling
+    glVertex3f(-100,100,-100);
+    glVertex3f(100,100,-100);
+    glVertex3f(100,100,1000);
+    glVertex3f(-100,100,1000);
+    // Walls
+    glVertex3f(-100,-100,1000);
+    glVertex3f(100,-100,1000);
+    glVertex3f(100,100,1000);
+    glVertex3f(-100,100,1000);
+
+    glVertex3f(-100,-100,-100);
+    glVertex3f(100,-100,-100);
+    glVertex3f(100,100,-100);
+    glVertex3f(-100,100,-100);
+
+    glVertex3f(100,100,1000);
+    glVertex3f(100,-100,1000);
+    glVertex3f(100,-100,-100);
+    glVertex3f(100,100,-100);
+
+    glVertex3f(-100,100,10);
+    glVertex3f(-100,-100,10);
+    glVertex3f(-100,-100,-10);
+    glVertex3f(-100,100,-10);
+    glEnd();
+    draw();
+
+
+    glutSwapBuffers();
+}
+
+
+void processSpecialKeys(int key, int xx, int yy) { // process user input, code found at https://community.khronos.org/t/glutkeyboardfunc-problem/68033
+
+    float fraction = 0.5f;
+
+    switch (key) {
+        case GLUT_KEY_LEFT :
+            angle -= 0.01f;
+            lx = sin(angle);
+            lz = -cos(angle);
+            break;
+        case GLUT_KEY_RIGHT :
+            angle += 0.01f;
+            lx = sin(angle);
+            lz = -cos(angle);
+            break;
+        case GLUT_KEY_UP :
+            x += lx * fraction;
+            z += lz * fraction;
+            break;
+        case GLUT_KEY_DOWN :
+            x -= lx * fraction;
+            z -= lz * fraction;
+            break;
+        case GLUT_KEY_F1 :
+            //z += lz * fraction;
+            y += (ly +1) * fraction;
+            break;
+        case GLUT_KEY_F2 :
+            //z -= lz * fraction ;
+            y -= (ly +1)* fraction;
+            break;
+    }
+
+}
+void changeSize(int w, int h) {
+
+// Prevent a divide by zero, when window is too short
+// (you cant make a window of zero width).
+    if (h == 0)
+        h = 1;
+    float ratio = w * 1.0 / h;
+
+// Use the Projection Matrix
+    glMatrixMode(GL_PROJECTION);
+
+// Reset Matrix
+    glLoadIdentity();
+
+// Set the viewport to be the entire window
+    glViewport(0, 0, w, h);
+
+// Set the correct perspective.
+    gluPerspective(45.0f, ratio, 0.1f, 100.0f);
+
+// Get Back to the Modelview
+    glMatrixMode(GL_MODELVIEW);
+}
+
+
+void processNormalKeys(unsigned char key, int x, int y) {
+
+    if (key == 27)
+        exit(0);
+}
+
+
+int main(int argc, char **argv) {
+
+    // init GLUT and create window
 
     glutInit(&argc, argv);
-    glutInitDisplayMode (GLUT_DOUBLE);
-
+    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowPosition(100,100);
-    glutInitWindowSize(1024,512);
-    glutCreateWindow ("miniproyecto2");
+    glutInitWindowSize(320,320);
+    glutCreateWindow("user input");
 
-    glClearColor(1.0, 1.0, 1.0, 1.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluOrtho2D(0, 1024.0, 0, 512.0);//0,1024,0,512
-    glutTimerFunc(MSECS, display, fase);
+    // register callbacks
+    glutDisplayFunc(renderScene);
+    glutReshapeFunc(changeSize);
+    glutIdleFunc(renderScene);
+    glutKeyboardFunc(processNormalKeys);
+    glutSpecialFunc(processSpecialKeys);
 
+    // OpenGL init
+    glEnable(GL_DEPTH_TEST);
+
+
+    // enter GLUT event processing cycle
     glutMainLoop();
 
-    return 0;
+    return 1;
 }

@@ -5,5 +5,5 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 ")
 set(OpenGLinkers -lglut -lGLU -lGL curses)
 
-add_executable(miniproyecto2 main.cpp draw.cpp draw.h)
-target_link_libraries(miniproyecto2 ${OpenGLinkers} m)
+add_executable(FinalGraficas main.cpp draw.cpp draw.h)
+target_link_libraries(FinalGraficas ${OpenGLinkers} m)
