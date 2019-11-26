@@ -4,174 +4,96 @@
 
 #include <GL/gl.h>
 #include <math.h>
-float radioCirculos = 62.0;
-float segmentosStdr = 500;
+#include <GL/glut.h>
 
-float matrizDeDibujo[][2] = {{508.0,192.0},//0: gran circulo central inferior
-                             {508.0,312.0},//1: gran circulo central superior
-                             {448.0,251.0},//2: gran circulo izquierdo
-                             {566.0,251.0},//3: gran circulo derecho
-                             {450.0,135.0},//4: medio circulo inferior izquierdo
-                             {567.0,135.0},//5: medio circulo inferior derecho
-                             {450.0,368.0},//6: medio circulo superior izquierdo
-                             {567.0,368.0},//7: medio circulo superior derecho
-                             {390.0,313.0},//8: medio circulo lateral izquierdo superior
-                             {390.0,198.0},//9: medio circulo lateral izquierdo inferior
-                             {624.0,313.0},//10: medio circulo lateral derecho superior
-                             {624.0,198.0},//11: medio circulo lateral derecho inferior
-                             {382,127},//12: cuadro trasero
-                             {632,127},//13: cuadro trasero
-                             {632,380},//14: cuadro trasero
-                             {382,380},//15: cuadro trasero
-                             {394,138},//16: cuadro frontal
-                             {621,138},//17: cuadro frontal
-                             {621,364},//18: cuadro frontal
-                             {393,364}//19 cuadro frontal
-};
+void draw() {
 
-void dibujaCuadro(float x1,float y1,float x2,float y2,float x3,float y3,float x4,float y4,float r,float g, float b){
-    glColor3f(r,g,b);
-    glBegin(GL_POLYGON);
-    glVertex2f(x1,y1);
-    glVertex2f(x2,y2);
-    glVertex2f(x3,y3);
-    glVertex2f(x4,y4);
+    glColor3f(1.0f, 1.0f, 1.0f);
 
+// Draw Body
+    GLubyte texArray [0][32][4];
+    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexImage2D (GL_TEXTURE_2D, 0, GL_RGBA, 32, 32, 0, GL_RGBA, GL_UNSIGNED_BYTE, texArray);
+    //glColor3f(0,0,1);
+    for (float i = -10; i < 0; ++i) { //draw the central spheres
+        glPushMatrix();
+        glTranslatef(0.0f ,0.0f, -10.0f);
+        glEnable(GL_TEXTURE_2D);
+        glutSolidSphere(10.0f/(-i),20,20);
+        glDisable(GL_TEXTURE_2D);
 
-    glEnd();
-}
-void dibujaCirculo(float cx, float cy, float r, float num_segments){//hecho con la ayuda de https://stackoverflow.com/questions/22444450/drawing-circle-with-opengl
-    glColor3f(68.0/255.0,141.0/255.0,136.0/255.0);
-    glLineWidth(50);
-    glBegin(GL_LINE_LOOP);
-    for(float ii = 0; ii < num_segments; ii++)
-    {
-        float theta = 2.0f * 3.1415926f * ii /num_segments;
-
-        float x = r * cosf(theta);
-        float y = r * sinf(theta);
-
-        glVertex2f(x + cx, y + cy);
     }
-    glEnd();
-}
-void dibujaCirculoPequeno(float cx, float cy, float r, float num_segments){//hecho con la ayuda de https://stackoverflow.com/questions/22444450/drawing-circle-with-opengl
-    glColor3f(35.0/255.0,69.0/255.0,58.0/255.0);
-    glLineWidth(3);
-    glBegin(GL_LINE_LOOP);
-    for(float ii = 0; ii < num_segments; ii++)
-    {
-        float theta = 2.0f * 3.1415926f * ii /num_segments;
-        float x = r * cosf(theta);
-        float y = r * sinf(theta);
-        glVertex2f(x + cx, y + cy);
-    }
-    glEnd();
-}
+    glPopMatrix();
+    glBegin(GL_LINE_STRIP);
+    glLineWidth(GL_MAX);
 
-void dibujaMedioCirculo(float cx, float cy, float r, float num_segments,float dir, bool vertical){
-    glColor3f(68.0/255.0,141.0/255.0,136.0/255.0);
-    glLineWidth(40.0);
-    glBegin(GL_LINE_LOOP);
-    for(float ii = 0; ii < num_segments; ii++)
+    float lineR = 0.0;
+    float lineG = 0.0;
+    float lineB = 130.0;
+    double zc = -80;
+    float radius = 30;
+    float radialDecrease = 0.01;
+    for(int ii = 0; ii < 30/radialDecrease; ii++) //loop for the spiral, loop ii until the radius is 0
     {
-        float theta = dir*3.1415926f * ii /num_segments;
-        float x = r * cosf(theta);
-        float y = r * sinf(theta);
+        float theta = 2.0f * 3.1415926f * float(ii) / float(100);//get the current angle
 
-        if(vertical){
-            float temp = x;
-            x = y;
-            y = temp;
+        float xc = radius * cosf(theta);//calculate the x component
+        float yc = radius * sinf(theta);//calculate the y component
+        zc -= 0.005;
+        radius -= radialDecrease;
+        if(ii > 0){
+            lineR +=0.001;
+            lineB += 0.001;
         }
-        glVertex2f(x + cx, y + cy);
+        if (ii > 1000 && ii < 1200){
+            lineR += 0.001;
+            lineG += 0.001;
+            lineB -= 0.001;
+        }
+        if(ii >= 1200 && ii < 1400){
+            lineR -= 0.002;
+            lineG += 0.002;
+            lineB -= 0.002;
+        }
+        if(ii >= 1400){
+            lineR -= 0.002;
+            lineG += 0.005;
+            lineB -= 0.002;
+        }
+        glColor3f(lineR,lineG,lineB);
+        glVertex3d(xc , yc , zc);//output vertex
+
     }
     glEnd();
-}
-void dibujaCuadroTrasero(){    dibujaCuadro( //cuadro trasero
-            matrizDeDibujo[12][0],matrizDeDibujo[12][1],
-            matrizDeDibujo[13][0],matrizDeDibujo[13][1],
-            matrizDeDibujo[14][0],matrizDeDibujo[14][1],
-            matrizDeDibujo[15][0],matrizDeDibujo[15][1],
-            68.0/255.0,141.0/255.0,136.0/255.0);//68,141,136
-}
-void dibujaCuadroFrontal(){ dibujaCuadro( //cuadro frontal
-            matrizDeDibujo[16][0],matrizDeDibujo[16][1],
-            matrizDeDibujo[17][0],matrizDeDibujo[17][1],
-            matrizDeDibujo[18][0],matrizDeDibujo[18][1],
-            matrizDeDibujo[19][0],matrizDeDibujo[19][1],
-            135.0/255.0,189.0/255.0,187.0/255.0);//135,189,187
-}
-void dibujaCuadroBlanco(float x, float y){  //cuadro frontal
-            dibujaCuadro( //cuadro trasero
-                    matrizDeDibujo[12][0] +x,matrizDeDibujo[12][1]+y,
-                    matrizDeDibujo[13][0]+x,matrizDeDibujo[13][1]+y,
-                    matrizDeDibujo[14][0]+x,matrizDeDibujo[14][1]+y,
-                    matrizDeDibujo[15][0]+x,matrizDeDibujo[15][1]+y,
-                    255,255,255);
-}
-void dibujaTextura(){
-    dibujaMedioCirculo(matrizDeDibujo[4][0],matrizDeDibujo[4][1],radioCirculos,segmentosStdr,1.0,0);
-    dibujaMedioCirculo(matrizDeDibujo[5][0],matrizDeDibujo[5][1],radioCirculos,segmentosStdr,1.0,0);
-    dibujaMedioCirculo(matrizDeDibujo[6][0],matrizDeDibujo[6][1],radioCirculos,segmentosStdr,-1.0,0);
-    dibujaMedioCirculo(matrizDeDibujo[7][0],matrizDeDibujo[7][1],radioCirculos,segmentosStdr,-1.0,0);
-    dibujaMedioCirculo(matrizDeDibujo[8][0],matrizDeDibujo[8][1],radioCirculos,segmentosStdr,1.0,1);
-    dibujaMedioCirculo(matrizDeDibujo[9][0],matrizDeDibujo[9][1],radioCirculos,segmentosStdr,1.0,1);
-    dibujaMedioCirculo(matrizDeDibujo[10][0],matrizDeDibujo[10][1],radioCirculos,segmentosStdr,-1.0,1);
-    dibujaMedioCirculo(matrizDeDibujo[11][0],matrizDeDibujo[11][1],radioCirculos,segmentosStdr,-1.0,1);
-    dibujaCirculoPequeno(matrizDeDibujo[0][0],matrizDeDibujo[0][1],7.0,segmentosStdr);
-    dibujaCirculoPequeno(matrizDeDibujo[1][0],matrizDeDibujo[1][1],7.0,segmentosStdr);
-    dibujaCirculoPequeno(matrizDeDibujo[2][0],matrizDeDibujo[2][1],7.0,segmentosStdr);
-    dibujaCirculoPequeno(matrizDeDibujo[3][0],matrizDeDibujo[3][1],7.0,segmentosStdr);
-}
-void dibujaCirculoSuperior(){
-    dibujaCirculo(matrizDeDibujo[1][0],matrizDeDibujo[1][1],radioCirculos,segmentosStdr);
-}
-void dibujaCirculoInferior(){
-    dibujaCirculo(matrizDeDibujo[0][0],matrizDeDibujo[0][1],radioCirculos,segmentosStdr);
-}
-void dibujaCirculoIzquierdo(){
-    dibujaCirculo(matrizDeDibujo[2][0],matrizDeDibujo[2][1],radioCirculos,segmentosStdr);
-}
-void dibujaCirculoDerecho(){
-    dibujaCirculo(matrizDeDibujo[3][0],matrizDeDibujo[3][1],radioCirculos,segmentosStdr);
-}
-
-void dibujaBaldoza(float x, float y, float br, float bg, float bb,float segs){
-    float radioCirculos = 62.0;
-    float segmentosStdr = 500;
 
 
-    dibujaCuadro( //cuadro trasero
-            matrizDeDibujo[12][0] +x,matrizDeDibujo[12][1]+y,
-            matrizDeDibujo[13][0]+x,matrizDeDibujo[13][1]+y,
-            matrizDeDibujo[14][0]+x,matrizDeDibujo[14][1]+y,
-            matrizDeDibujo[15][0]+x,matrizDeDibujo[15][1]+y,
-            br/255.0,bg/255.0,bb/255.0);
+    for(int ii = 0; ii < 30/0.01; ii++) //loop for the incoming pointed tetrahedrons in the top of a pointed spiral
+    {
+        glBegin(GL_LINES);
+        glLineWidth(GL_MAX);
+        float theta = 2.0f * 3.1415926f * float(ii) / float(100);//get the current angle
+        float x = (radius-25)* cosf(theta);//calculate the x component
+        float y = (radius-25 )* sinf(theta);//calculate the y component
+        //creates spiral effect
+        zc += 0.01f;
+        radius -= 0.01f;
+        //set the color schema
+        lineR += 0.001f;
+        lineG -= 0.01f;
+        lineB -= 0.01f;
+        glColor3f(lineR,lineG,lineB);
+        if (ii %2 != 0){ //draw the tetrahedrons
+            glEnd();
+            glPushMatrix();
+            glTranslatef(x,y,zc);
+            glutSolidTetrahedron();
+            glPopMatrix();
+        }
+        glVertex3d(x , y , zc);//output vertex
 
-    dibujaCuadro( //cuadro frontal
-            matrizDeDibujo[16][0]+x,matrizDeDibujo[16][1]+y,
-            matrizDeDibujo[17][0]+x,matrizDeDibujo[17][1]+y,
-            matrizDeDibujo[18][0]+x,matrizDeDibujo[18][1]+y,
-            matrizDeDibujo[19][0]+x,matrizDeDibujo[19][1]+y,
-            br/255.0,bg/255.0,bb/255.0);
+    }
+    glEnd();
 
-    dibujaCirculo(matrizDeDibujo[0][0]+x,matrizDeDibujo[0][1]+y,radioCirculos,segs);//central inferior
-    dibujaCirculo(matrizDeDibujo[1][0]+x,matrizDeDibujo[1][1]+y,radioCirculos,segs);//central superior
-    dibujaCirculo(matrizDeDibujo[2][0]+x,matrizDeDibujo[2][1]+y,radioCirculos,segs);//izquierdo
-    dibujaCirculo(matrizDeDibujo[3][0]+x,matrizDeDibujo[3][1]+y,radioCirculos,segs);//derecho
-    dibujaMedioCirculo(matrizDeDibujo[4][0]+x,matrizDeDibujo[4][1]+y,radioCirculos,segs,1.0,0);
-    dibujaMedioCirculo(matrizDeDibujo[5][0]+x,matrizDeDibujo[5][1]+y,radioCirculos,segs,1.0,0);
-    dibujaMedioCirculo(matrizDeDibujo[6][0]+x,matrizDeDibujo[6][1]+y,radioCirculos,segs,-1.0,0);
-    dibujaMedioCirculo(matrizDeDibujo[7][0]+x,matrizDeDibujo[7][1]+y,radioCirculos,segs,-1.0,0);
-    dibujaMedioCirculo(matrizDeDibujo[8][0]+x,matrizDeDibujo[8][1]+y,radioCirculos,segs,1.0,1);
-    dibujaMedioCirculo(matrizDeDibujo[9][0]+x,matrizDeDibujo[9][1]+y,radioCirculos,segs,1.0,1);
-    dibujaMedioCirculo(matrizDeDibujo[10][0]+x,matrizDeDibujo[10][1]+y,radioCirculos,segs,-1.0,1);
-    dibujaMedioCirculo(matrizDeDibujo[11][0]+x,matrizDeDibujo[11][1]+y,radioCirculos,segs,-1.0,1);
-    dibujaCirculoPequeno(matrizDeDibujo[0][0]+x,matrizDeDibujo[0][1]+y,7.0,segs);
-    dibujaCirculoPequeno(matrizDeDibujo[1][0]+x,matrizDeDibujo[1][1]+y,7.0,segs);
-    dibujaCirculoPequeno(matrizDeDibujo[2][0]+x,matrizDeDibujo[2][1]+y,7.0,segs);
-    dibujaCirculoPequeno(matrizDeDibujo[3][0]+x,matrizDeDibujo[3][1]+y,7.0,segs);
-
-    glFlush();
 }
+
+
