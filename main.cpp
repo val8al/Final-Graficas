@@ -64,6 +64,8 @@ void processSpecialKeys(int key, int xx, int yy) {
             //z -= lz * fraction ;
             y -= (ly +1)* fraction;
             break;
+        case GLUT_KEY_F4:
+            addLight(x,y,z);
     }
 
 }
