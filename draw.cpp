@@ -8,13 +8,25 @@
 
 void draw() {
 
-    glColor3f(1.0f, 1.0f, 1.0f);
+    //**********************************VAR DEFINITIONS*****************************************
+
+    GLfloat matSpecular[] =  {1.0,1.0,1.0,1.0};
+    GLfloat matShininess[] =  {100.0};
+    GLfloat light_position[] = {1.0,1.0,-1.0,0.0};
+    glMaterialfv(GL_FRONT, GL_SPECULAR,matSpecular);
+    glMaterialfv(GL_FRONT,GL_SHININESS,matShininess);
+    glLightfv(GL_LIGHT1,GL_POSITION,light_position);
+    // Static ambient light, you may change it to any color youd like
+    GLfloat ambientParams[] = {255, 1, 1, 1}; //Ambient light {r,g,b,alpha}
+    glLightfv(GL_LIGHT0, GL_POSITION, ambientParams);
+
+    //GLfloat diffParams[] = {255,0,0,0.0}; //Diffuse light {r,g,b,alpha}
+    //glLightfv(GL_LIGHT1,GL_SPECULAR,diffParams);
+
 
 // Draw Body
-    GLubyte texArray [0][32][4];
-    glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexImage2D (GL_TEXTURE_2D, 0, GL_RGBA, 32, 32, 0, GL_RGBA, GL_UNSIGNED_BYTE, texArray);
-    //glColor3f(0,0,1);
+
+    glColor3f(0,0,1);
     for (float i = -10; i < 0; ++i) { //draw the central spheres
         glPushMatrix();
         glTranslatef(0.0f ,0.0f, -10.0f);
@@ -92,6 +104,40 @@ void draw() {
         glVertex3d(x , y , zc);//output vertex
 
     }
+    glColor3f(0.0f, 0.0f, 0.0f);
+    glBegin(GL_QUADS);
+
+// Floor
+    glVertex3f(-100,-100,-100);
+    glVertex3f(100,-100,-100);
+    glVertex3f(100,-100,1000);
+    glVertex3f(-100,-100,1000);
+    // Ceiling
+    glVertex3f(-100,100,-100);
+    glVertex3f(100,100,-100);
+    glVertex3f(100,100,1000);
+    glVertex3f(-100,100,1000);
+    // Walls
+    glVertex3f(-1000,-100,1000);
+    glVertex3f(1000,-100,1000);
+    glVertex3f(1000,100,1000);
+    glVertex3f(-1000,100,1000);
+
+    glVertex3f(-1000,-100,-100);
+    glVertex3f(1000,-100,-100);
+    glVertex3f(1000,100,-100);
+    glVertex3f(-1000,100,-100);
+
+    glVertex3f(1000,100,1000);
+    glVertex3f(1000,-100,1000);
+    glVertex3f(1000,-100,-100);
+    glVertex3f(1000,100,-100);
+
+    glVertex3f(-1000,100,10);
+    glVertex3f(-1000,-100,10);
+    glVertex3f(-1000,-100,-10);
+    glVertex3f(-1000,100,-10);
+
     glEnd();
 
 }

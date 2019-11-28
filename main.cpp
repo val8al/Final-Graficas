@@ -25,40 +25,7 @@ void renderScene(void) {
               0.0f, 1.0f, 0.0f);
 
 
-    glColor3f(0.0f, 0.0f, 0.0f);
-    glBegin(GL_QUADS);
 
-// Floor
-    glVertex3f(-100,-100,-100);
-    glVertex3f(100,-100,-100);
-    glVertex3f(100,-100,1000);
-    glVertex3f(-100,-100,1000);
-    // Ceiling
-    glVertex3f(-100,100,-100);
-    glVertex3f(100,100,-100);
-    glVertex3f(100,100,1000);
-    glVertex3f(-100,100,1000);
-    // Walls
-    glVertex3f(-100,-100,1000);
-    glVertex3f(100,-100,1000);
-    glVertex3f(100,100,1000);
-    glVertex3f(-100,100,1000);
-
-    glVertex3f(-100,-100,-100);
-    glVertex3f(100,-100,-100);
-    glVertex3f(100,100,-100);
-    glVertex3f(-100,100,-100);
-
-    glVertex3f(100,100,1000);
-    glVertex3f(100,-100,1000);
-    glVertex3f(100,-100,-100);
-    glVertex3f(100,100,-100);
-
-    glVertex3f(-100,100,10);
-    glVertex3f(-100,-100,10);
-    glVertex3f(-100,-100,-10);
-    glVertex3f(-100,100,-10);
-    glEnd();
     draw();
 
 
@@ -150,9 +117,12 @@ int main(int argc, char **argv) {
     // OpenGL init
     //+++++++++++++++++++Start light parameters+++++++++++++++++++++++++++++++++++++
    /* glEnable(GL_CULL_FACE);
+    */
     glEnable(GL_LIGHT_MODEL_AMBIENT);
     glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);*/
+
+    glEnable(GL_LIGHT0); // Variable for the ambient light
+    glEnable(GL_LIGHT1);
     //+++++++++++++++++++End light parameters+++++++++++++++++++++++++++++++++++++++
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
