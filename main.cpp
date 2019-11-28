@@ -65,7 +65,9 @@ void processSpecialKeys(int key, int xx, int yy) {
             y -= (ly +1)* fraction;
             break;
         case GLUT_KEY_F4:
-            addLight(x,y,z);
+            glPushMatrix();
+            addLight(x,y,z,x+lx,y+ly,z+lz);
+            glPopMatrix();
     }
 
 }
@@ -125,6 +127,7 @@ int main(int argc, char **argv) {
 
     glEnable(GL_LIGHT0); // Variable for the ambient light
     glEnable(GL_LIGHT1);
+
     //+++++++++++++++++++End light parameters+++++++++++++++++++++++++++++++++++++++
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);

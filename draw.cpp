@@ -11,20 +11,19 @@ void draw() {
 
     //**********************************VAR DEFINITIONS*****************************************
 
-    GLfloat matSpecular[] =  {1.0,1.0,1.0,0.0};
-    GLfloat matShininess[] =  {120.0};
-    GLfloat light_position[] = {1.0,1.0,-1.0,0.0};
-    glMaterialfv(GL_FRONT, GL_SPECULAR,matSpecular);
-    glMaterialfv(GL_FRONT,GL_SHININESS,matShininess);
-    glLightfv(GL_LIGHT1,GL_POSITION,light_position);
+    GLfloat matShininessSpec[] =  {500.0};
+    GLfloat matLightColor[] = {0,0,0,1};
+    //glMaterialfv(GL_FRONT, GL_SPECULAR,matSpecular);
+    glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT);
+    glMaterialfv(GL_FRONT,GL_SHININESS,matShininessSpec);
+    glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT,matLightColor);
     // Static ambient light, you may change it to any color youd like
-    GLfloat ambientParams[] = {1, 1, 0, 1}; //Ambient light {r,g,b,alpha}
-    glLightfv(GL_LIGHT0, GL_POSITION, ambientParams);
+    GLfloat ambientParams[] = {0, 0, 0, 0}; //Ambient light {r,g,b,alpha}
 
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambientParams);
+    //glLightfv(GL_LIGHT1,GL_POSITION,light_position);
 
-
-// Draw Body
-
+    //*******************************************************************************************
 
     for (float i = -10; i < 0; ++i) { //draw the central spheres
         glPushMatrix();
@@ -37,9 +36,9 @@ void draw() {
     glBegin(GL_LINE_STRIP);
     glLineWidth(GL_MAX);
 
-    float lineR = 0.0;
+    /*float lineR = 0.0;
     float lineG = 0.0;
-    float lineB = 130.0;
+    float lineB = 130.0;*/
     double zc = -80;
     float radius = 30;
     float radialDecrease = 0.01;
@@ -97,7 +96,7 @@ void draw() {
             glPushMatrix();
             glTranslatef(x,y,zc);
             //glutSolidCone(0.5,10,10,10);
-            glutSolidSphere(2,20,20);
+            glutSolidTetrahedron();
             glPopMatrix();
         }
         glVertex3d(x , y , zc);//output vertex
@@ -140,8 +139,20 @@ void draw() {
     glEnd();
 
 }
-void addLight(float x,float y,float z){
-    GLfloat light_position[] =  {x, y, z, 1.0};
-    glLightfv(GL_LIGHT1,GL_SPECULAR,light_position);
+void addLight(float x,float y,float z,float lx, float ly, float lz){
+    GLfloat matShininess[] =  {120.0};
+    GLfloat matSpecular[] =  {1,1,1,1.0}; //TODO:  cambiar estos por variables para controlar el color de la luz
+    GLfloat light_position[] =  {x, y, z, 0.0};
+    GLfloat light_direction[] =  {lx, ly, lz, 0.0};
+    GLfloat attentuation[] =  {50.0};
+
+    glMaterialfv(GL_FRONT, GL_SPECULAR,matSpecular);
+    glMaterialfv(GL_FRONT,GL_SHININESS,matShininess);
+
+    glLightfv(GL_LIGHT2,GL_POSITION,light_position);
+    glLightfv(GL_LIGHT2,GL_SPECULAR,matSpecular);
+    glLightfv(GL_LIGHT2,GL_SPOT_DIRECTION,light_direction);
+    glLightfv(GL_LIGHT2,GL_LINEAR_ATTENUATION,attentuation);
+    glEnable(GL_LIGHT2);
 }
 
