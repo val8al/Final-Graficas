@@ -104,7 +104,7 @@ void draw() {
     }
     //glColor3f(0.0f, 0.0f, 0.0f);
     glBegin(GL_QUADS);
-
+/*
 // Floor
     glVertex3f(-100,-100,-100);
     glVertex3f(100,-100,-100);
@@ -135,13 +135,13 @@ void draw() {
     glVertex3f(-1000,-100,10);
     glVertex3f(-1000,-100,-10);
     glVertex3f(-1000,100,-10);
-
+*/
     glEnd();
 
 }
 void addLight(float x,float y,float z,float lx, float ly, float lz){
     GLfloat matShininess[] =  {120.0};
-    GLfloat matSpecular[] =  {1,1,1,1.0}; //TODO:  cambiar estos por variables para controlar el color de la luz
+    GLfloat matSpecular[] =  {1.0,1.0,0,1.0}; //TODO:  cambiar estos por variables para controlar el color de la luz
     GLfloat light_position[] =  {x, y, z, 0.0};
     GLfloat light_direction[] =  {lx, ly, lz, 0.0};
     GLfloat attentuation[] =  {50.0};
